@@ -1,0 +1,49 @@
+syntax: glob
+#afs files
+.__afs*
+
+#temp files
+*~
+.~lock*.odt\#
+.~lock*.doc\#
+*.asv
+*.autosave
+*.swp
+*.orig
+*.original
+*.bak
+*.kate-swp
+
+#system files
+*core
+*.fuse_hidden*
+
+#images and multimedia
+*.eps
+*.ps
+*.png
+*.jpg
+*.pdf
+*.bmp
+*.MOV
+
+#matlab
+*slprj*
+*SLPRJ*
+*.mat
+*.mexa64
+hs_err_pid*.log
+
+#latex
+*.aux
+*.log
+*.spl
+*.blg
+*.synctex.gz
+*.lyx
+*.dvi
+*.nav
+*.out
+*.snm
+*.tex.backup
+*.bbl
