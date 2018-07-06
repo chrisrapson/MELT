@@ -23,7 +23,6 @@ if n_buttons > 0
 		else
 			mask(SP == chosen_SP_index) = button_ix;
 		end
-		app.KleverImageLabellingToolKILTUIFigure.UserData.mask = mask;
 	else
 		%pixel-by-pixel labelling
 		if app.EraseButton.Value
@@ -31,8 +30,8 @@ if n_buttons > 0
 		else
 			mask(mouse_pos(1), mouse_pos(2)) = button_ix;
 		end
-		app.KleverImageLabellingToolKILTUIFigure.UserData.mask = mask;
 	end
 	
+	app.KleverImageLabellingToolKILTUIFigure.UserData.mask = mask;
 	plot_image;
 end

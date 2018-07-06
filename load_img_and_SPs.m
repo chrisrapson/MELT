@@ -1,5 +1,9 @@
 %loads image and superpixels
-
+I = [];
+BM = [];
+my_title = [];
+bbox = [];
+	
 ax = app.UIAxes;
 my_UIFigure = app.KleverImageLabellingToolKILTUIFigure; % needed for load_img_and_SPs
 SP_algo = app.choice_of_superpixel_algo.Value;
@@ -11,21 +15,31 @@ file_ix = my_UIFigure.UserData.image_index;
 %update
 mask_filename = app.maskfilenameEditField_2.Value;
 
-mask = app.KleverImageLabellingToolKILTUIFigure.UserData.mask;
+mask = app.KleverImageLabellingToolKILTUIFigure.UserData.mask; %should match bbox
 if isnumeric(file_ix) && file_ix > 0 && mod(file_ix,1) == 0 ...
 		&& file_ix <= length(filenames)
 	f = filenames(file_ix);
 	file = fullfile(f.folder, f.name);
 
 	I = imread(file);
-	SP = superpixels(I, SP_size, 'method', SP_algo, 'compactness', SP_compactness);
-	BM = boundarymask(SP);
-	my_title = f.name;
+	
+	if app.BboxesonlyCheckBox.Value
+		bbox = get_active_bbox(app, f.folder, f.name);
+		if isempty(bbox)
+			bbox = [1, 1, size(I,2), size(I,1)];
+			disp(['no vehicle bounding boxes in image ',f.name])	
+		end
+	else
+		bbox = [1, 1, size(I,2), size(I,1)];
+	end
+	
+	I = I(bbox(2):bbox(4), bbox(1):bbox(3), :);
 	
 	if isempty(mask)
 		mask_file = fullfile(f.folder, mask_filename);
 		if exist(mask_file, 'file')
-			mask = imread(mask_file);
+			mask = imread(mask_file); %should match image file
+			mask = mask(bbox(2):bbox(4), bbox(1):bbox(3),1);
 		end
 	end
 	if ~(size(mask,1) == size(I,1) && size(mask,2) == size(I,2))
@@ -35,10 +49,10 @@ if isnumeric(file_ix) && file_ix > 0 && mod(file_ix,1) == 0 ...
 		mask = zeros(size(I,1), size(I,2));
 	end
 	
-else
-	I = [];
-	BM = [];
-	my_title = [];
+	SP_size = min(SP_size, floor(numel(I)/2));
+	SP = superpixels(I, SP_size, 'method', SP_algo, 'compactness', SP_compactness);
+	BM = boundarymask(SP);
+	my_title = f.name;
 end
 
 app.KleverImageLabellingToolKILTUIFigure.UserData.mask = mask;

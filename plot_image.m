@@ -7,7 +7,11 @@ if app.ShowSuperpixelsCheckBox.Value
 	if app.ShowImageCheckBox.Value
 		ih1 = imagesc(imoverlay(I, BM, 'cyan'), 'Parent', ax);
 	else
-		ih1 = imagesc(BM, 'cyan', 'Parent', ax);
+		im_BM = zeros(size(BM));
+		im_BM(~BM) = 1;
+		im_BM(:,:,2) = ones(size(BM));
+		im_BM(:,:,3) = ones(size(BM));
+		ih1 = imagesc(im_BM, 'Parent', ax);
 	end
 else
 	if app.ShowImageCheckBox.Value
