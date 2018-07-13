@@ -1,8 +1,7 @@
 function success = edit_label_button(app, selectedButton)
 success = true;
 
-all_buttons = app.LabelsButtonGroup.Children;
-n_buttons = length(all_buttons);
+[all_buttons, n_buttons] = get_all_label_togglebuttons(app.LabelsButtonGroup);
 button_ix = get_button_ix(all_buttons, selectedButton, n_buttons);
 
 prompt = 'name your new label';

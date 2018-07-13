@@ -3,7 +3,7 @@
 hold(ax, 'off')
 cla(ax)
 
-if app.ShowSuperpixelsCheckBox.Value
+if strncmp(app.choice_of_algo.Value, 'Superpixels', 11)
 	if app.ShowImageCheckBox.Value
 		ih1 = imagesc(imoverlay(I, BM, 'cyan'), 'Parent', ax);
 	else
@@ -29,8 +29,7 @@ if ~isempty(mask) && app.ShowlabelledregionsCheckBox.Value
 	hold(ax,'all')
 
 	mask_cmap = [1 1 1];
-	all_buttons = app.LabelsButtonGroup.Children;
-	n_buttons = length(all_buttons);
+	[all_buttons, n_buttons] = get_all_label_togglebuttons(app.LabelsButtonGroup);
 	for ii=1:n_buttons
 		mask_cmap = [mask_cmap; all_buttons(ii).BackgroundColor];
 	end

@@ -6,9 +6,6 @@ bbox = [];
 	
 ax = app.UIAxes;
 my_UIFigure = app.KleverImageLabellingToolKILTUIFigure; % needed for load_img_and_SPs
-SP_algo = app.choice_of_superpixel_algo.Value;
-SP_size = app.NumberofSuperpixelsSpinner.Value;
-SP_compactness = app.SuperpixelcompactnessSpinner.Value;
 filenames = my_UIFigure.UserData.image_files;
 file_ix = my_UIFigure.UserData.image_index;
 
@@ -49,9 +46,14 @@ if isnumeric(file_ix) && file_ix > 0 && mod(file_ix,1) == 0 ...
 		mask = zeros(size(I,1), size(I,2));
 	end
 	
-	SP_size = min(SP_size, floor(numel(I)/2));
-	SP = superpixels(I, SP_size, 'method', SP_algo, 'compactness', SP_compactness);
-	BM = boundarymask(SP);
+	if strncmp(app.choice_of_algo.Value, 'Superpixels', 11)
+		SP_algo = app.choice_of_algo.Value(13:end);
+		SP_size = app.SP_or_Brush_size_Spinner.Value;
+		SP_compactness = app.SuperpixelcompactnessSpinner.Value;
+		SP_size = min(SP_size, floor(numel(I)/2));
+		SP = superpixels(I, SP_size, 'method', SP_algo, 'compactness', SP_compactness);
+		BM = boundarymask(SP, 4);
+	end
 	my_title = f.name;
 end
 
