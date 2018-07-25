@@ -21,7 +21,8 @@ if isnumeric(file_ix) && file_ix > 0 && mod(file_ix,1) == 0 ...
 	I = imread(file);
 	
 	if app.BboxesonlyCheckBox.Value
-		bbox = get_active_bbox(app, f.folder, f.name);
+		bbox = get_active_bbox(app, f.folder, f.name, size(I));
+		
 		if isempty(bbox)
 			bbox = [1, 1, size(I,2), size(I,1)];
 			disp(['no vehicle bounding boxes in image ',f.name])	

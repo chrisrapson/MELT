@@ -21,7 +21,7 @@ else
 	end
 end
 axis(ax, 'ij')
-title(ax, my_title)
+title(ax, titleify(my_title))
 ih1.ButtonDownFcn = {@im_ButtonDownFcn, app};
 
 if ~isempty(mask) && app.ShowlabelledregionsCheckBox.Value

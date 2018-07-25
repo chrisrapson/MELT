@@ -23,15 +23,17 @@ if app.BboxesonlyCheckBox.Value
 			error(['can''t find image file ', image_file, ' or mask file ',mask_fullfilename])
 		end
 	end
-	bbox = get_active_bbox(app, f.folder, f.name);
+	bbox = get_active_bbox(app, f.folder, f.name, size(full_mask));
 	if ~isempty(bbox) && ~isempty(mask)
 		full_mask(bbox(2):bbox(4), bbox(1):bbox(3)) = mask;
 	end
 	mask = full_mask;
 end
 
-if strcmpi(mask_fullfilename(end-3:end),'.png') || strcmpi(mask_fullfilename(end-3:end),'.jpg')
+if strcmpi(mask_fullfilename(end-3:end),'.png') 
 	imwrite(uint8(mask), mask_fullfilename)
+elseif strcmpi(mask_fullfilename(end-3:end),'.jpg')
+	imwrite(uint8(mask), mask_fullfilename, 'Mode','lossless')
 else
 	imwrite(uint8(mask), mask_fullfilename, 'png')
 end
