@@ -1,5 +1,9 @@
 function im_ButtonDownFcn(im, hit, app)
 
+% if strcmp(zoom(app.UIAxes), 'on') || strcmp(pan(app.UIAxes), 'on')
+% 	return
+% end
+	
 %button_ix is the active label
 [all_buttons, n_buttons] = get_all_label_togglebuttons(app.LabelsButtonGroup);
 selectedButton = app.LabelsButtonGroup.SelectedObject;
@@ -24,9 +28,35 @@ if n_buttons > 0
 			mask(SP == chosen_SP_index) = button_ix;
 		end
 	elseif strcmp(app.choice_of_algo.Value, 'Polygon')
-		disp('im_ButtonDownFcn triggered in polygon mode, but this function hasn''t been implemented yet')
-		%TODO: left button add vertex to polygon
-		%      right button close polygon, update mask and reset vertices
+		%DONE: left button add vertex to polygon
+		%      left button near first vertex --> close polygon, update mask
+		%      right button clear vertices
+		if hit.Button == 1
+			if isfield(app.KleverImageLabellingToolKILTUIFigure.UserData, 'polygon_in_progress')
+				p_i_p = app.KleverImageLabellingToolKILTUIFigure.UserData.polygon_in_progress;
+			else
+				p_i_p = [];
+			end
+			if (size(p_i_p,1) < 2) || ...                                               %at least 3 points to make a closed polygon
+					sqrt((mouse_pos(1) - p_i_p(1,1))^2 + (mouse_pos(2) - p_i_p(1,2))^2) > 2 %mouse close to first point of polygon
+				%add new point to polygon
+				app.KleverImageLabellingToolKILTUIFigure.UserData.polygon_in_progress = [p_i_p; mouse_pos];
+			else
+				%close polygon and label pixels
+				tmp = make_all_possible_combinations_of_two_vectors(1:size(mask,1), 1:size(mask,2));
+				x = reshape(tmp(1,:), size(mask,1), size(mask,2));
+				y = reshape(tmp(2,:), size(mask,1), size(mask,2));
+				in = inpolygon(x, y, p_i_p(:,1), p_i_p(:,2));
+				if app.EraseButton.Value
+					mask(in) = 0;
+				else
+					mask(in) = button_ix;
+				end
+				app.KleverImageLabellingToolKILTUIFigure.UserData.polygon_in_progress = [];
+			end
+		else
+			app.KleverImageLabellingToolKILTUIFigure.UserData.polygon_in_progress = [];
+		end
 	elseif strcmp(app.choice_of_algo.Value, 'Brush')
 		brush_size = app.SP_or_Brush_size_Spinner.Value;
 		pixels_to_label_x = [max(1,mouse_pos(1)-brush_size+1) : min(size(mask,1), mouse_pos(1)+brush_size-1)];
@@ -41,4 +71,14 @@ if n_buttons > 0
 	
 	app.KleverImageLabellingToolKILTUIFigure.UserData.mask = mask;
 	plot_image;
+	
+	if strcmp(app.choice_of_algo.Value, 'Polygon')
+		p_i_p = app.KleverImageLabellingToolKILTUIFigure.UserData.polygon_in_progress;
+		if ~isempty(p_i_p)
+			plot(ax, p_i_p(:,2), p_i_p(:,1), 'co')
+			plot(ax, p_i_p(:,2), p_i_p(:,1), 'c--')
+			ph = plot(ax, p_i_p(1,2), p_i_p(1,1), 'mo');
+			ph.ButtonDownFcn = {@im_ButtonDownFcn, app};
+		end
+	end
 end

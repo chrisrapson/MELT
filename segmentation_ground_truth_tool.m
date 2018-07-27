@@ -19,7 +19,8 @@
 % - keyboard shortcuts (next image, zoom/select). maybe with UIFigure.WindowKeyPressFcn
 % - hover text (seems impossible with appdesigner)
 % / fix axes size
-% - polygons (maybe smart polygons? Superpixels need less clicks, but edges aren't as smooth as smart polygons.)
+% / polygons
+% - smart polygons? Superpixels need less clicks, but edges aren't as smooth as smart polygons.
 % / brush size
 % - show thin superpixel borders, not full pixel width
 % - opacity
