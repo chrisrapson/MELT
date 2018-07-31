@@ -26,3 +26,4 @@
 % - opacity
 % / slider for label buttons
 % - ignore mask files (but watch out for files which coincidentally have the same name format?)
+% - load the image just once and store it in UserData
