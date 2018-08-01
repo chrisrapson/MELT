@@ -43,7 +43,7 @@ if n_buttons > 0
 				app.KleverImageLabellingToolKILTUIFigure.UserData.polygon_in_progress = [p_i_p; mouse_pos];
 			else
 				%close polygon and label pixels
-				in = poly2mask(my_polygon(:,1), my_polygon(:,2), size(mask,1), size(mask,2));
+				in = poly2mask(p_i_p(:,2), p_i_p(:,1), size(mask,1), size(mask,2));
 				if app.EraseButton.Value
 					mask(in) = 0;
 				else
