@@ -2,6 +2,7 @@
 
 hold(ax, 'off')
 cla(ax)
+hold(ax,'all')
 
 if strncmp(app.choice_of_algo.Value, 'Superpixels', 11)
 	if app.ShowImageCheckBox.Value
@@ -25,16 +26,13 @@ title(ax, titleify(my_title))
 ih1.ButtonDownFcn = {@im_ButtonDownFcn, app};
 
 if ~isempty(mask) && app.ShowlabelledregionsCheckBox.Value
-	%allow mask to be overplotted
-	hold(ax,'all')
-
 	mask_cmap = [1 1 1];
 	[all_buttons, n_buttons] = get_all_label_togglebuttons(app.LabelsButtonGroup);
 	for ii=1:n_buttons
 		mask_cmap = [mask_cmap; all_buttons(ii).BackgroundColor];
 	end
 
-	[ih2, patch2] = imagescnan(mask, 'Parent', ax);
+	ih2 = imagesc(mask, 'Parent', ax);
 	if n_buttons == 0
 		set(ax, 'colormap', [mask_cmap; mask_cmap]);
 		set(ax, 'clim', [0 1]);
@@ -46,4 +44,15 @@ if ~isempty(mask) && app.ShowlabelledregionsCheckBox.Value
 % 	patch2.FaceAlpha = 0.75;%125;
 
 	ih2.ButtonDownFcn = {@im_ButtonDownFcn, app};
+end
+
+	
+if strcmp(app.choice_of_algo.Value, 'Polygon')
+	p_i_p = app.KleverImageLabellingToolKILTUIFigure.UserData.polygon_in_progress;
+	if ~isempty(p_i_p)
+		plot(ax, p_i_p(:,2), p_i_p(:,1), 'co')
+		plot(ax, p_i_p(:,2), p_i_p(:,1), 'c--')
+		ph = plot(ax, p_i_p(1,2), p_i_p(1,1), 'mo');
+		ph.ButtonDownFcn = {@im_ButtonDownFcn, app};
+	end
 end

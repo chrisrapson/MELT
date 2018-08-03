@@ -68,14 +68,4 @@ if n_buttons > 0
 	
 	app.KleverImageLabellingToolKILTUIFigure.UserData.mask = mask;
 	plot_image;
-	
-	if strcmp(app.choice_of_algo.Value, 'Polygon')
-		p_i_p = app.KleverImageLabellingToolKILTUIFigure.UserData.polygon_in_progress;
-		if ~isempty(p_i_p)
-			plot(ax, p_i_p(:,2), p_i_p(:,1), 'co')
-			plot(ax, p_i_p(:,2), p_i_p(:,1), 'c--')
-			ph = plot(ax, p_i_p(1,2), p_i_p(1,1), 'mo');
-			ph.ButtonDownFcn = {@im_ButtonDownFcn, app};
-		end
-	end
 end

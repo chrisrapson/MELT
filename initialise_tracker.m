@@ -45,6 +45,7 @@ for ii=1:n_buttons
 					rel_pos = round(rel_pos * enlargement_factor); %enlarge it
 					enlarged_poly(jj,:) = rel_pos + [cx, cy];
 				end
+				enlarged_poly(enlarged_poly < 0) = 0;
 				x_mm = minmax(enlarged_poly(:,1)');
 				y_mm = minmax(enlarged_poly(:,2)');
 				bbox = [x_mm(1) y_mm(1) (x_mm(2) - x_mm(1)) (y_mm(2) - y_mm(1))];
