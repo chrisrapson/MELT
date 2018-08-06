@@ -1,59 +1,71 @@
 function bbox_list = load_bbox_list(image_dir, image_name)
 [parent_dir, images_dir] = fileparts(image_dir);
 labels_dir = fullfile(parent_dir, strrep(images_dir, 'image','label'));
-[~,fname, fext] = fileparts(image_name);
+[~,fname, ~] = fileparts(image_name);
 
 %Cityscapes format
-relevant_labels_cityscapes = [26,27,28,29,30];
-%26= car
-%27= truck
-%28= bus
-%29= caravan
-%30= trailer
+% relevant_labels_cityscapes = [26,27,28,29,30];
+% %26= car
+% %27= truck
+% %28= bus
+% %29= caravan
+% %30= trailer
 relevant_cat_labels_cityscapes = [0, 7]; %vehicle. Includes unwanted train, motocycle, bicycle, license plate
 
 bbox_list = [];
-if exist(fullfile(labels_dir,[fname, '.txt']), 'file')
+
+if contains(parent_dir, 'darknet')
+	%darknet might be a subfolder of KITTI/Berkeley etc so check it first
+	tmp = importdata(fullfile(labels_dir, [fname, '.txt']));
+	bbox_list = tmp.data(:,2:5); %bboxes only
+	I = imread(fullfile(image_dir, image_name));
+	[w_img, h_img] = size(I);
+	for ii=size(bbox_list,1):-1:1
+		w_bbox = bbox_list(3);
+		h_bbox = bbox_list(4);
+		bbox_list(ii,1) = floor((bbox_list(ii,1) - w_bbox/2)*w_img);
+		bbox_list(ii,2) = floor((bbox_list(ii,2) - h_bbox/2)*h_img);
+		bbox_list(ii,3) = ceil((bbox_list(ii,1) + w_bbox/2)*w_img);
+		bbox_list(ii,4) = ceil((bbox_list(ii,2) + h_bbox/2)*h_img);
+	end
+elseif contains(parent_dir, 'KITTI')
 	tmp = importdata(fullfile(labels_dir, [fname, '.txt']));
 	if ~isempty(tmp)
-
-		%KITTI format
-		if contains(parent_dir, 'KITTI')
-			bbox_list = tmp.data(:,4:7); %bboxes only. See file format description https://github.com/umautobots/vod-converter/blob/master/vod_converter/kitti.py
-			bbox_list = bbox_list + 1; %labels are 0-based pixel numbers. Add 1 to give matlab indices
-			for ii=size(bbox_list,1):-1:1
-				if strcmpi(tmp.rowheaders{ii}, 'Car') ...
-						|| strcmpi(tmp.rowheaders{ii}, 'Truck') ...
-						|| strcmpi(tmp.rowheaders{ii}, 'Vehicle') ...
-						|| strcmpi(tmp.rowheaders{ii}, 'Bus') ...
-						|| strcmpi(tmp.rowheaders{ii}, 'SUV') ...
-						|| strcmpi(tmp.rowheaders{ii}, 'Van') ...
-						|| strcmpi(tmp.rowheaders{ii}, 'Misc') ...
-						|| strcmpi(tmp.rowheaders{ii}, 'DontCare')
-					%round to pixel indices
-					bbox_list(ii,1) = floor(bbox_list(ii,1));
-					bbox_list(ii,2) = floor(bbox_list(ii,2));
-					bbox_list(ii,3) = ceil(bbox_list(ii,3));
-					bbox_list(ii,4) = ceil(bbox_list(ii,4));
-				else
-					bbox_list(ii,:) = [];
-				end
+		bbox_list = tmp.data(:,4:7); %bboxes only. See file format description https://github.com/umautobots/vod-converter/blob/master/vod_converter/kitti.py
+		bbox_list = bbox_list + 1; %labels are 0-based pixel numbers. Add 1 to give matlab indices
+		for ii=size(bbox_list,1):-1:1
+			if strcmpi(tmp.rowheaders{ii}, 'Car') ...
+					|| strcmpi(tmp.rowheaders{ii}, 'Truck') ...
+					|| strcmpi(tmp.rowheaders{ii}, 'Vehicle') ...
+					|| strcmpi(tmp.rowheaders{ii}, 'Bus') ...
+					|| strcmpi(tmp.rowheaders{ii}, 'SUV') ...
+					|| strcmpi(tmp.rowheaders{ii}, 'Van') ...
+					|| strcmpi(tmp.rowheaders{ii}, 'Misc') ...
+					|| strcmpi(tmp.rowheaders{ii}, 'DontCare')
+				%round to pixel indices
+				bbox_list(ii,1) = floor(bbox_list(ii,1));
+				bbox_list(ii,2) = floor(bbox_list(ii,2));
+				bbox_list(ii,3) = ceil(bbox_list(ii,3));
+				bbox_list(ii,4) = ceil(bbox_list(ii,4));
+			else
+				bbox_list(ii,:) = [];
 			end
 		end
-
-		if contains(parent_dir, 'Foggy')
-			bbox_list = tmp(:,2:5); %bboxes only
-	% 		bbox_list = bbox_list + 1; %labels are 0-based pixel numbers. Add 1 to give matlab indices
-			for ii=size(bbox_list,1):-1:1
-				if ismember(tmp(ii,1), relevant_cat_labels_cityscapes)
-	% 				%round to pixel indices
-	% 				bbox_list(ii,1) = floor(bbox_list(ii,1));
-	% 				bbox_list(ii,2) = floor(bbox_list(ii,2));
-	% 				bbox_list(ii,3) = ceil(bbox_list(ii,3));
-	% 				bbox_list(ii,4) = ceil(bbox_list(ii,4));
-				else
-					bbox_list(ii,:) = [];
-				end
+	end
+elseif contains(parent_dir, 'Foggy')
+	tmp = importdata(fullfile(labels_dir, [fname, '.txt']));
+	if ~isempty(tmp)
+		bbox_list = tmp(:,2:5); %bboxes only
+% 		bbox_list = bbox_list + 1; %labels are 0-based pixel numbers. Add 1 to give matlab indices
+		for ii=size(bbox_list,1):-1:1
+			if ismember(tmp(ii,1), relevant_cat_labels_cityscapes)
+% 				%round to pixel indices
+% 				bbox_list(ii,1) = floor(bbox_list(ii,1));
+% 				bbox_list(ii,2) = floor(bbox_list(ii,2));
+% 				bbox_list(ii,3) = ceil(bbox_list(ii,3));
+% 				bbox_list(ii,4) = ceil(bbox_list(ii,4));
+			else
+				bbox_list(ii,:) = [];
 			end
 		end
 	end
@@ -174,17 +186,17 @@ elseif contains(parent_dir, 'Cityscapes') || contains(parent_dir, 'Wilddash')
 	end
 elseif contains(parent_dir, 'SYSU')
 	fid = fopen(fullfile(labels_dir, 'groundtruth.txt'), 'r');
-	line_number = str2num(image_name(5:7));
+	line_number = str2num(image_name(5:7)); %#ok operating on a vector
 	tmp = textscan(fid, '%[^\n]', 1, 'HeaderLines', line_number-1);
 	fclose(fid);
 
 	tmp_split = split(tmp{1});
 	%check match
 	if strcmp(tmp_split(1), image_name)
-		category = tmp_split(2);
+% 		category = tmp_split(2);
 		for ii = 6:4:length(tmp_split)
-			x = str2num(tmp_split{ii-3});
-			y = str2num(tmp_split{ii-2});
+			x = str2double(tmp_split{ii-3});
+			y = str2double(tmp_split{ii-2});
 			bbox_list = [bbox_list; x, y, x+str2num(tmp_split{ii-1}), y+str2num(tmp_split{ii})];
 		end
 	else
