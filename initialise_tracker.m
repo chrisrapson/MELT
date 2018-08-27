@@ -12,8 +12,11 @@ end
 app.KleverImageLabellingToolKILTUIFigure.UserData.tracker = {};
 app.KleverImageLabellingToolKILTUIFigure.UserData.tracker_points = {};
 app.KleverImageLabellingToolKILTUIFigure.UserData.tracker_poky = {};
-		
-load_img_and_SPs; %load I and mask
+
+remember_bboxes_checkbox = app.BboxesonlyCheckBox.Value;
+app.BboxesonlyCheckBox.Value = 0;
+load_img_and_SPs; %load I and mask (turn off bboxes temporarily, otherwise this script only returns the zoomed in mask)
+app.BboxesonlyCheckBox.Value = remember_bboxes_checkbox;
 I_grayscale = uint8(mean(I,3));
 [all_buttons, n_buttons] = get_all_label_togglebuttons(app.LabelsButtonGroup);
 
