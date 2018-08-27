@@ -10,20 +10,19 @@ if ~isempty(bbox_list)
 	if isempty(bbox_ix)
 		bbox_ix = 1;
 	end
-	if bbox_ix > length(bbox_list)
-		warning(['bbox_ix=',num2str(bbox_ix)])
-	end
 
 	%3. select coordinates of active bbox
-	bbox = bbox_list(bbox_ix,:);
+	if bbox_ix > 0 && bbox_ix <= size(bbox_list,1)
+		bbox = bbox_list(bbox_ix,:);
 
-	%check none of the indices are 0
-	bbox(bbox==0) = 1;
-	%check none of the indices are larger than the image size
-	if bbox(3) > max_dims(2)
-		bbox(3) = max_dims(2);
-	end
-	if bbox(4) > max_dims(1)
-		bbox(4) = max_dims(1);
+		%check none of the indices are 0
+		bbox(bbox==0) = 1;
+		%check none of the indices are larger than the image size
+		if bbox(3) > max_dims(2)
+			bbox(3) = max_dims(2);
+		end
+		if bbox(4) > max_dims(1)
+			bbox(4) = max_dims(1);
+		end
 	end
 end
