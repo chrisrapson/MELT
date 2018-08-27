@@ -29,28 +29,61 @@ if contains(parent_dir, 'darknet')
 		bbox_list(ii,4) = ceil((bbox_list(ii,2) + h_bbox/2)*h_img);
 	end
 elseif contains(parent_dir, 'KITTI')
-	tmp = importdata(fullfile(labels_dir, [fname, '.txt']));
-	if ~isempty(tmp)
-		bbox_list = tmp.data(:,4:7); %bboxes only. See file format description https://github.com/umautobots/vod-converter/blob/master/vod_converter/kitti.py
-		bbox_list = bbox_list + 1; %labels are 0-based pixel numbers. Add 1 to give matlab indices
-		for ii=size(bbox_list,1):-1:1
-			if strcmpi(tmp.rowheaders{ii}, 'Car') ...
-					|| strcmpi(tmp.rowheaders{ii}, 'Truck') ...
-					|| strcmpi(tmp.rowheaders{ii}, 'Vehicle') ...
-					|| strcmpi(tmp.rowheaders{ii}, 'Bus') ...
-					|| strcmpi(tmp.rowheaders{ii}, 'SUV') ...
-					|| strcmpi(tmp.rowheaders{ii}, 'Van') ...
-					|| strcmpi(tmp.rowheaders{ii}, 'Misc') ...
-					|| strcmpi(tmp.rowheaders{ii}, 'DontCare')
-				%round to pixel indices
-				bbox_list(ii,1) = floor(bbox_list(ii,1));
-				bbox_list(ii,2) = floor(bbox_list(ii,2));
-				bbox_list(ii,3) = ceil(bbox_list(ii,3));
-				bbox_list(ii,4) = ceil(bbox_list(ii,4));
-			else
-				bbox_list(ii,:) = [];
+	if contains(parent_dir, 'videos')
+		labels_dir = strrep(parent_dir, 'image','label');
+		fid = fopen(fullfile(labels_dir, [images_dir, '.txt']), 'r');
+% 		tmp = fscanf(fid,'%d%d%s%d%d%f%f%f %f%f%f %f%f%f %f%f%f');
+		frame_ix = -1;
+		while frame_ix < str2double(fname)
+			tmp_split = split(fgetl(fid));
+			frame_ix = str2double(tmp_split{1});
+		end
+		while frame_ix == str2double(fname)
+			class = tmp_split{3};
+			if strcmpi(class, 'Car') ...
+						|| strcmpi(class, 'Truck') ...
+						|| strcmpi(class, 'Vehicle') ...
+						|| strcmpi(class, 'Bus') ...
+						|| strcmpi(class, 'SUV') ...
+						|| strcmpi(class, 'Van') ...
+						|| strcmpi(class, 'Misc') ...
+						|| strcmpi(class, 'DontCare')
+				x1 = str2double(tmp_split{7});
+				y1 = str2double(tmp_split{8});
+				x2 = str2double(tmp_split{9});
+				y2 = str2num(tmp_split{10});
+				bbox_list = [bbox_list; floor(x1), floor(y1), ceil(x2), ceil(y2)];
+			end
+			tmp_split = split(fgetl(fid));
+			frame_ix = str2double(tmp_split{1});
+		end
+		fclose(fid);
+	elseif contains(parent_dir, 'images')
+		tmp = importdata(fullfile(labels_dir, [fname, '.txt']));
+		if ~isempty(tmp)
+			bbox_list = tmp.data(:,4:7); %bboxes only. See file format description https://github.com/umautobots/vod-converter/blob/master/vod_converter/kitti.py
+			bbox_list = bbox_list + 1; %labels are 0-based pixel numbers. Add 1 to give matlab indices
+			for ii=size(bbox_list,1):-1:1
+				if strcmpi(tmp.rowheaders{ii}, 'Car') ...
+						|| strcmpi(tmp.rowheaders{ii}, 'Truck') ...
+						|| strcmpi(tmp.rowheaders{ii}, 'Vehicle') ...
+						|| strcmpi(tmp.rowheaders{ii}, 'Bus') ...
+						|| strcmpi(tmp.rowheaders{ii}, 'SUV') ...
+						|| strcmpi(tmp.rowheaders{ii}, 'Van') ...
+						|| strcmpi(tmp.rowheaders{ii}, 'Misc') ...
+						|| strcmpi(tmp.rowheaders{ii}, 'DontCare')
+					%round to pixel indices
+					bbox_list(ii,1) = floor(bbox_list(ii,1));
+					bbox_list(ii,2) = floor(bbox_list(ii,2));
+					bbox_list(ii,3) = ceil(bbox_list(ii,3));
+					bbox_list(ii,4) = ceil(bbox_list(ii,4));
+				else
+					bbox_list(ii,:) = [];
+				end
 			end
 		end
+	else
+		error('path to groundtruth file must include the substring ''images'' or ''videos'' so that I know what I''m dealing with')
 	end
 elseif contains(parent_dir, 'Foggy')
 	tmp = importdata(fullfile(labels_dir, [fname, '.txt']));
@@ -117,6 +150,9 @@ elseif contains(parent_dir, 'Berkeley')
 	
 elseif contains(parent_dir, 'Cityscapes') || contains(parent_dir, 'Wilddash')
 	fname = strrep(fname, 'leftImg8bit','gtFine_polygons');
+	if ~exist(fullfile(labels_dir,[fname, '.json']), 'file')
+		fname = [fname,'_polygons'];
+	end
 	if exist(fullfile(labels_dir,[fname, '.json']), 'file')
 		fid = fopen(fullfile(labels_dir,[fname, '.json']));
 		raw = fread(fid, inf);
@@ -179,7 +215,7 @@ elseif contains(parent_dir, 'Cityscapes') || contains(parent_dir, 'Wilddash')
 				imagesc(I)
 				poly = objects(ii).polygon;
 				hold all
-				plot([poly(:,1); poly(1,1)], [poly(:,2); poly(1,2)])
+				plot([poly(:,1); poly(1,1)], [poly(:,2); poly(1,2)],'m-')
 				title(objects(ii).label);
 			end
 		end
