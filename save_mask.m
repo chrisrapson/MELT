@@ -33,7 +33,10 @@ end
 if strcmpi(mask_fullfilename(end-3:end),'.png') 
 	imwrite(uint8(mask), mask_fullfilename)
 elseif strcmpi(mask_fullfilename(end-3:end),'.jpg')
-	imwrite(uint8(mask), mask_fullfilename, 'Mode','lossless')
+	%don't save as jpg because lossless jpg is not well supported
+	%files don't open in gimp or MS Photos 
+	mask_fullfilename(end-3:end) = '.png';
+	imwrite(uint8(mask), mask_fullfilename)%, 'Mode','lossless')
 else
 	imwrite(uint8(mask), mask_fullfilename, 'png')
 end
