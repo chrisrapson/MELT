@@ -1,4 +1,7 @@
 function bbox_list = load_bbox_list(image_dir, image_name)
+if strcmp(image_dir(end-5:end),'masked')
+	[image_dir,~,~] = fileparts(image_dir);
+end
 [parent_dir, images_dir] = fileparts(image_dir);
 labels_dir = fullfile(parent_dir, strrep(images_dir, 'image','label'));
 [~,fname, ~] = fileparts(image_name);
@@ -210,7 +213,7 @@ elseif contains(parent_dir, 'Cityscapes') || contains(parent_dir, 'Wilddash')
 						  )
 				%do nothing
 			else
-				I = imread(fullfile(image_dir, image_name));
+				I = imread(fullfile(image_dir,'unmasked', image_name));
 				figure
 				imagesc(I)
 				poly = objects(ii).polygon;

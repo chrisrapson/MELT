@@ -42,7 +42,9 @@ if isnumeric(file_ix) && file_ix > 0 && mod(file_ix,1) == 0 ...
 	end
 	if ~(size(mask,1) == size(I,1) && size(mask,2) == size(I,2))
 		if ~isempty(mask)
-			warning('mask and image sizes don''t match. Clearing mask')
+			if any(mask(:))
+				warning('mask and image sizes don''t match. Clearing mask')
+			end
 		end
 		mask = zeros(size(I,1), size(I,2));
 	end
@@ -52,7 +54,11 @@ if isnumeric(file_ix) && file_ix > 0 && mod(file_ix,1) == 0 ...
 		SP_size = app.SP_or_Brush_size_Spinner.Value;
 		SP_compactness = app.SuperpixelcompactnessSpinner.Value;
 		SP_size = min(SP_size, floor(numel(I)/2));
-		SP = superpixels(I, SP_size, 'method', SP_algo, 'compactness', SP_compactness);
+		if strncmpi(SP_algo, 'slic', 4)
+	 		SP = superpixels(I, SP_size, 'method', SP_algo, 'compactness', SP_compactness);
+		else %SNIC
+			[SP, ~] = snic_mex(I, SP_size, SP_compactness);
+		end
 		BM = boundarymask(SP, 4);
 	end
 	my_title = f.name;

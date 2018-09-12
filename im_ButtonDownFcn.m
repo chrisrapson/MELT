@@ -56,8 +56,8 @@ if n_buttons > 0
 		end
 	elseif strcmp(app.choice_of_algo.Value, 'Brush')
 		brush_size = app.SP_or_Brush_size_Spinner.Value;
-		pixels_to_label_x = [max(1,mouse_pos(1)-brush_size+1) : min(size(mask,1), mouse_pos(1)+brush_size-1)];
-		pixels_to_label_y = [max(1,mouse_pos(2)-brush_size+1) : min(size(mask,2), mouse_pos(2)+brush_size-1)];
+		pixels_to_label_x = [max(1,mouse_pos(1)-floor(brush_size/2)) : min(size(mask,1), mouse_pos(1)+floor(brush_size/2))];
+		pixels_to_label_y = [max(1,mouse_pos(2)-floor(brush_size/2)) : min(size(mask,2), mouse_pos(2)+floor(brush_size/2))];
 		%pixel-by-pixel labelling
 		if app.EraseButton.Value
 			mask(pixels_to_label_x, pixels_to_label_y) = 0;
