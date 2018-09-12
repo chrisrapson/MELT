@@ -56,3 +56,5 @@ if strcmp(app.choice_of_algo.Value, 'Polygon')
 		ph.ButtonDownFcn = {@im_ButtonDownFcn, app};
 	end
 end
+
+axis(ax,'tight')
