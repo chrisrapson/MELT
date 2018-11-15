@@ -2,16 +2,16 @@ function initialise_tracker(app)
 %identify points within the masked area that can be used for tracking
 
 %start by releasing existing trackers, and initialising everything to empty
-for ii = size(app.KleverImageLabellingToolKILTUIFigure.UserData.tracker, 1):-1:1
-	for kk = size(app.KleverImageLabellingToolKILTUIFigure.UserData.tracker, 2):-1:1
-		if ~isempty(app.KleverImageLabellingToolKILTUIFigure.UserData.tracker{ii,kk})
-			app.KleverImageLabellingToolKILTUIFigure.UserData.tracker{ii,kk}.release();
+for ii = size(app.MoreEfficientLabellingToolMELTUIFigure.UserData.tracker, 1):-1:1
+	for kk = size(app.MoreEfficientLabellingToolMELTUIFigure.UserData.tracker, 2):-1:1
+		if ~isempty(app.MoreEfficientLabellingToolMELTUIFigure.UserData.tracker{ii,kk})
+			app.MoreEfficientLabellingToolMELTUIFigure.UserData.tracker{ii,kk}.release();
 		end
 	end
 end
-app.KleverImageLabellingToolKILTUIFigure.UserData.tracker = {};
-app.KleverImageLabellingToolKILTUIFigure.UserData.tracker_points = {};
-app.KleverImageLabellingToolKILTUIFigure.UserData.tracker_poky = {};
+app.MoreEfficientLabellingToolMELTUIFigure.UserData.tracker = {};
+app.MoreEfficientLabellingToolMELTUIFigure.UserData.tracker_points = {};
+app.MoreEfficientLabellingToolMELTUIFigure.UserData.tracker_poky = {};
 
 remember_bboxes_checkbox = app.BboxesonlyCheckBox.Value;
 app.BboxesonlyCheckBox.Value = 0;
@@ -90,15 +90,15 @@ for ii=1:n_buttons
 			if isempty(points{kk})
 				disp('empty points... that''s weird')
 			else
-				app.KleverImageLabellingToolKILTUIFigure.UserData.tracker{ii,kk} = vision.PointTracker('MaxBidirectionalError', 2);
-				app.KleverImageLabellingToolKILTUIFigure.UserData.tracker{ii,kk}.initialize(points{kk}, I_grayscale);
-				app.KleverImageLabellingToolKILTUIFigure.UserData.tracker_points{ii,kk} = points{kk};
-				app.KleverImageLabellingToolKILTUIFigure.UserData.tracker_poly{ii,kk}   = RPs(kk).ConvexHull; %save the un-enlarged polygon
+				app.MoreEfficientLabellingToolMELTUIFigure.UserData.tracker{ii,kk} = vision.PointTracker('MaxBidirectionalError', 2);
+				app.MoreEfficientLabellingToolMELTUIFigure.UserData.tracker{ii,kk}.initialize(points{kk}, I_grayscale);
+				app.MoreEfficientLabellingToolMELTUIFigure.UserData.tracker_points{ii,kk} = points{kk};
+				app.MoreEfficientLabellingToolMELTUIFigure.UserData.tracker_poly{ii,kk}   = RPs(kk).ConvexHull; %save the un-enlarged polygon
 			end
 		end
 	else
-		app.KleverImageLabellingToolKILTUIFigure.UserData.tracker_points{ii} = [];
-		app.KleverImageLabellingToolKILTUIFigure.UserData.tracker_poly{ii}   = [];
+		app.MoreEfficientLabellingToolMELTUIFigure.UserData.tracker_points{ii} = [];
+		app.MoreEfficientLabellingToolMELTUIFigure.UserData.tracker_poly{ii}   = [];
 	end
 end
 

@@ -5,14 +5,14 @@ my_title = [];
 bbox = [];
 	
 ax = app.UIAxes;
-my_UIFigure = app.KleverImageLabellingToolKILTUIFigure; % needed for load_img_and_SPs
+my_UIFigure = app.MoreEfficientLabellingToolMELTUIFigure; % needed for load_img_and_SPs
 filenames = my_UIFigure.UserData.image_files;
 file_ix = my_UIFigure.UserData.image_index;
 
 %update
 mask_filename = app.maskfilenameEditField_2.Value;
 
-mask = app.KleverImageLabellingToolKILTUIFigure.UserData.mask; %should match bbox
+mask = app.MoreEfficientLabellingToolMELTUIFigure.UserData.mask; %should match bbox
 if isnumeric(file_ix) && file_ix > 0 && mod(file_ix,1) == 0 ...
 		&& file_ix <= length(filenames)
 	f = filenames(file_ix);
@@ -64,4 +64,4 @@ if isnumeric(file_ix) && file_ix > 0 && mod(file_ix,1) == 0 ...
 	my_title = f.name;
 end
 
-app.KleverImageLabellingToolKILTUIFigure.UserData.mask = mask;
+app.MoreEfficientLabellingToolMELTUIFigure.UserData.mask = mask;

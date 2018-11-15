@@ -1,14 +1,14 @@
 function save_mask(app)
 %save mask to a prescribed file
 
-file_ix = app.KleverImageLabellingToolKILTUIFigure.UserData.image_index;
-filenames = app.KleverImageLabellingToolKILTUIFigure.UserData.image_files;
+file_ix = app.MoreEfficientLabellingToolMELTUIFigure.UserData.image_index;
+filenames = app.MoreEfficientLabellingToolMELTUIFigure.UserData.image_files;
 f = filenames(file_ix);
 mask_filename = app.maskfilenameEditField_2.Value;
 
 mask_fullfilename = fullfile(f.folder, mask_filename);
 
-mask = app.KleverImageLabellingToolKILTUIFigure.UserData.mask;
+mask = app.MoreEfficientLabellingToolMELTUIFigure.UserData.mask;
 if app.BboxesonlyCheckBox.Value
 	%load saved mask and overwrite the relevant section of it with the mask for the active_bbox
 	if exist(mask_fullfilename, 'file')

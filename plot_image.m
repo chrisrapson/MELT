@@ -48,7 +48,7 @@ end
 
 	
 if strcmp(app.choice_of_algo.Value, 'Polygon')
-	p_i_p = app.KleverImageLabellingToolKILTUIFigure.UserData.polygon_in_progress;
+	p_i_p = app.MoreEfficientLabellingToolMELTUIFigure.UserData.polygon_in_progress;
 	if ~isempty(p_i_p)
 		plot(ax, p_i_p(:,2), p_i_p(:,1), 'co')
 		plot(ax, p_i_p(:,2), p_i_p(:,1), 'c--')

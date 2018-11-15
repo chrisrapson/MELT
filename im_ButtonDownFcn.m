@@ -32,15 +32,15 @@ if n_buttons > 0
 		%      left button near first vertex --> close polygon, update mask
 		%      right button clear vertices
 		if hit.Button == 1
-			if isfield(app.KleverImageLabellingToolKILTUIFigure.UserData, 'polygon_in_progress')
-				p_i_p = app.KleverImageLabellingToolKILTUIFigure.UserData.polygon_in_progress;
+			if isfield(app.MoreEfficientLabellingToolMELTUIFigure.UserData, 'polygon_in_progress')
+				p_i_p = app.MoreEfficientLabellingToolMELTUIFigure.UserData.polygon_in_progress;
 			else
 				p_i_p = [];
 			end
 			if (size(p_i_p,1) < 2) || ...                                               %at least 3 points to make a closed polygon
 					sqrt((mouse_pos(1) - p_i_p(1,1))^2 + (mouse_pos(2) - p_i_p(1,2))^2) > 2 %mouse close to first point of polygon
 				%add new point to polygon
-				app.KleverImageLabellingToolKILTUIFigure.UserData.polygon_in_progress = [p_i_p; mouse_pos];
+				app.MoreEfficientLabellingToolMELTUIFigure.UserData.polygon_in_progress = [p_i_p; mouse_pos];
 			else
 				%close polygon and label pixels
 				in = poly2mask(p_i_p(:,2), p_i_p(:,1), size(mask,1), size(mask,2));
@@ -49,10 +49,10 @@ if n_buttons > 0
 				else
 					mask(in) = button_ix;
 				end
-				app.KleverImageLabellingToolKILTUIFigure.UserData.polygon_in_progress = [];
+				app.MoreEfficientLabellingToolMELTUIFigure.UserData.polygon_in_progress = [];
 			end
 		else
-			app.KleverImageLabellingToolKILTUIFigure.UserData.polygon_in_progress = [];
+			app.MoreEfficientLabellingToolMELTUIFigure.UserData.polygon_in_progress = [];
 		end
 	elseif strcmp(app.choice_of_algo.Value, 'Brush')
 		brush_size = app.SP_or_Brush_size_Spinner.Value;
@@ -66,7 +66,7 @@ if n_buttons > 0
 		end
 	end
 	
-	app.KleverImageLabellingToolKILTUIFigure.UserData.mask = mask;
+	app.MoreEfficientLabellingToolMELTUIFigure.UserData.mask = mask;
 	
 	tight_ax = 0; %disable fitting image to axes
 	plot_image;

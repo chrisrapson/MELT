@@ -6,7 +6,7 @@ bbox_list = load_bbox_list(image_dir, image_name);
 
 if ~isempty(bbox_list)
 	%2. get indices of active bbox
-	bbox_ix = app.KleverImageLabellingToolKILTUIFigure.UserData.bbox_ix;
+	bbox_ix = app.MoreEfficientLabellingToolMELTUIFigure.UserData.bbox_ix;
 	if isempty(bbox_ix)
 		bbox_ix = 1;
 	end
