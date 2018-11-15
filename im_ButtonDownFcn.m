@@ -67,5 +67,7 @@ if n_buttons > 0
 	end
 	
 	app.KleverImageLabellingToolKILTUIFigure.UserData.mask = mask;
+	
+	tight_ax = 0; %disable fitting image to axes
 	plot_image;
 end
