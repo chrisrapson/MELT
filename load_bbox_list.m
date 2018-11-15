@@ -174,7 +174,10 @@ elseif contains(parent_dir, 'Cityscapes') || contains(parent_dir, 'Wilddash')
 				poly = objects(ii).polygon;
 				x_mm = minmax(poly(:,1)');
 				y_mm = minmax(poly(:,2)');
-				bbox_list = [bbox_list; x_mm(1), y_mm(1), x_mm(2), y_mm(2)];
+				bbox = [x_mm(1), y_mm(1), x_mm(2), y_mm(2)];
+				if isempty(bbox_list) || ~any(ismember(bbox_list, bbox, 'rows'))
+					bbox_list = [bbox_list; bbox];
+				end
 			elseif (strcmp(objects(ii).label, 'road') || ...
 							 strcmp(objects(ii).label, 'ground') || ...
 							 strcmp(objects(ii).label, 'sidewalk') || ...
