@@ -1,10 +1,10 @@
-%tool to help label ground truth for training an image segmentation neural network
+%MELT is a tool to help label ground truth for training an image segmentation neural network
 
 %credit where credit's due: inspired by Viulib from Vicomtech
 %https://www.youtube.com/watch?v=xBUT4nJDh20
 
-%DONE: findout what format the output should be in. It should be a mask
-%TODO: create gui which does the following
+%TODO: create gui which does the following ("/"=done, "-"=todo)
+% / findout what format the output should be in. It should be a mask
 % / loads images from a folder one after the other
 % / overlays superpixels
 % / allows adaptation of superpixels (algorithm, size, compactness)
@@ -28,3 +28,6 @@
 % - ignore mask files (but watch out for files which coincidentally have the same name format?)
 % - load the image just once and store it in UserData
 % - maximise window when the app is started
+% - allow user to customise which class of bboxes they want to auto-zoom (rather than edit load_bbox_list.m)
+% - use YOLO to automatically generate bboxes
+% - train a CNN in the background to suggest masks (See Batchelor2017 IVCNZ)
