@@ -17,7 +17,7 @@ relevant_cat_labels_cityscapes = [0, 7]; %vehicle. Includes unwanted train, moto
 
 bbox_list = [];
 
-if contains(parent_dir, 'darknet')
+if contains(parent_dir, 'darknet') %aka YOLO
 	%darknet might be a subfolder of KITTI/Berkeley etc so check it first
 	tmp = importdata(fullfile(labels_dir, [fname, '.txt']));
 	bbox_list = tmp.data(:,2:5); %bboxes only
