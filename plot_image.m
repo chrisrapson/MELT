@@ -57,8 +57,10 @@ if strcmp(app.choice_of_algo.Value, 'Polygon')
 	end
 end
 
-%make image fit to axes
-%can be disabled by setting tight_ax ~= 1
-if ~exist('tight_ax','var') || tight_ax==1
-	axis(ax,'tight')
-end
+%TODO: maybe no longer necessary after I added in "%reset zoom" to the main app code
+%      including it makes the zoom reset every time you switch tools
+% %make image fit to axes
+% %can be disabled by setting tight_ax ~= 1
+% if ~exist('tight_ax','var') || tight_ax==1
+% 	axis(ax,'tight')
+% end
