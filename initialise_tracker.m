@@ -43,6 +43,7 @@ for ii=1:n_buttons
 			if polyarea(my_polygon(:,1), my_polygon(:,2)) < min_polygon_area
 				ps = polyshape(my_polygon(:,1), my_polygon(:,2));
 				[cx,cy] = centroid(ps);
+				enlarged_poly = zeros(size(my_polygon,1),2);
 				for jj = size(my_polygon,1):-1:1
 					rel_pos = my_polygon(jj,:) - [cx,cy]; %transform to [cx,cy] co-ordinate system
 					rel_pos = round(rel_pos * enlargement_factor); %enlarge it
