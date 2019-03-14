@@ -19,6 +19,12 @@ if isnumeric(file_ix) && file_ix > 0 && mod(file_ix,1) == 0 ...
 	file = fullfile(f.folder, f.name);
 
 	I = imread(file);
+	%if the image is grayscale, convert it to RGB, to avoid uncomfortable bugs
+	%e.g. no image shown in plot_image.m: ih1 = imagesc(I, 'Parent', ax);
+	%TODO: is there a better way?
+	if ismatrix(I)
+		I = cat(3, I, I, I);
+	end
 	
 	if app.BboxesonlyCheckBox.Value
 		bbox = get_active_bbox(app, f.folder, f.name, size(I));
