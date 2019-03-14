@@ -63,7 +63,13 @@ if isnumeric(file_ix) && file_ix > 0 && mod(file_ix,1) == 0 ...
 		if strncmpi(SP_algo, 'slic', 4)
 	 		SP = superpixels(I, SP_size, 'method', SP_algo, 'compactness', SP_compactness);
 		else %SNIC
-			[SP, ~] = snic_mex(I, SP_size, SP_compactness);
+			if exist('snic_mex','file') == 3
+				[SP, ~] = snic_mex(I, SP_size, SP_compactness);
+			else
+				%link to snic_mex.cpp from Achanta2017
+				%https://ivrl.epfl.ch/research-2/research-current/research-superpixels/
+				warning('If you do not have the SNIC function on your computer, please download it from https://ivrl.epfl.ch/wp-content/uploads/2018/08/SLIC_mex.zip')
+			end
 		end
 		BM = boundarymask(SP, 4);
 	end
