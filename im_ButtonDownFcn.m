@@ -14,6 +14,9 @@ if n_buttons > 0
 	load_img_and_SPs;
 
 	mouse_pos = flip(round(hit.IntersectionPoint(1:2)));
+	if all(isnan(mouse_pos))
+		error('could not get the position of your mouse click. This may be related to using a Mac or a TrackPad, or something completely different. Sorry, there appears to be no solution available at the moment')
+	end
 	mouse_pos(1) = max(1, min(size(mask,1), mouse_pos(1)));
 	mouse_pos(2) = max(1, min(size(mask,2), mouse_pos(2)));
 
