@@ -244,6 +244,33 @@ elseif contains(parent_dir, 'SYSU')
 	else
 		disp(['looking for a line matching image ',image_name,' but found ',tmp{1}])
 	end
+elseif contains(parent_dir, 'iRoads')
+	labels_dir = fullfile(image_dir, 'Annotations');
+	num_ix = strfind(fname, '_');
+	fnum = str2double(fname(num_ix+1:end));
+	labels_file = fullfile(labels_dir, [sprintf('%06d',fnum+1),'.xml']);
+	xDoc = parseXML(labels_file);
+	bbox_list = [];
+	for ii = 1:length(xDoc.Children)
+		if strcmp(xDoc.Children(ii).Name, 'object')
+			%object_type is always "Car"
+% 			object_type = xDoc.Children(ii).Children(2).Children.Data;
+			tmp = xDoc.Children(ii).Children(4).Children;
+			for jj = 1:length(tmp)
+				switch tmp(jj).Name
+					case 'xmin'
+						xmin = str2double(tmp(jj).Children.Data);
+					case 'xmax'
+						xmax = str2double(tmp(jj).Children.Data);
+					case 'ymin'
+						ymin = str2double(tmp(jj).Children.Data);
+					case 'ymax'
+						ymax = str2double(tmp(jj).Children.Data);
+				end
+			end
+			bbox_list = [bbox_list; xmin, ymin, xmax, ymax];
+		end
+	end
 else
 	warning(['labels file not found: ',fullfile(labels_dir, [fname, '.txt'])])
 end
