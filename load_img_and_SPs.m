@@ -12,7 +12,6 @@ file_ix = my_UIFigure.UserData.image_index;
 %update
 mask_filename = app.maskfilenameEditField_2.Value;
 
-mask = app.MoreEfficientLabellingToolMELTUIFigure.UserData.mask; %should match bbox
 if isnumeric(file_ix) && file_ix > 0 && mod(file_ix,1) == 0 ...
 		&& file_ix <= length(filenames)
 	f = filenames(file_ix);
@@ -37,23 +36,28 @@ if isnumeric(file_ix) && file_ix > 0 && mod(file_ix,1) == 0 ...
 		bbox = [1, 1, size(I,2), size(I,1)];
 	end
 	
-	I = I(bbox(2):bbox(4), bbox(1):bbox(3), :);
-	
-	if isempty(mask)
+	full_mask = app.MoreEfficientLabellingToolMELTUIFigure.UserData.full_mask; %should match bbox
+	if isempty(full_mask)
 		mask_file = fullfile(f.folder, mask_filename);
 		if exist(mask_file, 'file')
-			mask = imread(mask_file); %should match image file
-			mask = mask(bbox(2):bbox(4), bbox(1):bbox(3),1);
+			full_mask = imread(mask_file); %should match image file
+			app.MoreEfficientLabellingToolMELTUIFigure.UserData.full_mask = full_mask;
+		else
+			full_mask = zeros(size(I,1), size(I,2));
 		end
 	end
-	if ~(size(mask,1) == size(I,1) && size(mask,2) == size(I,2))
-		if ~isempty(mask)
-			if any(mask(:))
+	
+	if ~(size(full_mask,1) == size(I,1) && size(full_mask,2) == size(I,2))
+		if ~isempty(full_mask)
+			if any(full_mask(:))
 				warning('mask and image sizes don''t match. Clearing mask')
 			end
 		end
-		mask = zeros(size(I,1), size(I,2));
+		full_mask = zeros(size(I,1), size(I,2));
 	end
+	I = I(bbox(2):bbox(4), bbox(1):bbox(3), :);
+	mask = full_mask(bbox(2):bbox(4), bbox(1):bbox(3));
+	
 	
 	if strncmp(app.choice_of_algo.Value, 'Superpixels', 11)
 		SP_algo = app.choice_of_algo.Value(13:end);
@@ -75,5 +79,3 @@ if isnumeric(file_ix) && file_ix > 0 && mod(file_ix,1) == 0 ...
 	end
 	my_title = f.name;
 end
-
-app.MoreEfficientLabellingToolMELTUIFigure.UserData.mask = mask;

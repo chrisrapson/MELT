@@ -69,7 +69,8 @@ if n_buttons > 0
 		end
 	end
 	
-	app.MoreEfficientLabellingToolMELTUIFigure.UserData.mask = mask;
+	full_mask(bbox(2):bbox(4), bbox(1):bbox(3)) = mask;
+	app.MoreEfficientLabellingToolMELTUIFigure.UserData.full_mask = full_mask;
 	
 	tight_ax = 0; %disable fitting image to axes
 	plot_image;

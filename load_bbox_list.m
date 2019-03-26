@@ -275,11 +275,12 @@ else
 	warning(['labels file not found: ',fullfile(labels_dir, [fname, '.txt'])])
 end
 
-%TODO: should this depend on the resolution of the image?
-min_bbox_area = 1600; %pixels 40x40
-for ii=size(bbox_list,1):-1:1
-	bbox_area = (bbox_list(ii,3) - bbox_list(ii,1)) * (bbox_list(ii,4) - bbox_list(ii,2));
-	if bbox_area < min_bbox_area
-		bbox_list(ii,:) = [];
-	end
-end
+%temporarily disabled
+% %TODO: should this depend on the resolution of the image?
+% min_bbox_area = 1600; %pixels 40x40
+% for ii=size(bbox_list,1):-1:1
+% 	bbox_area = (bbox_list(ii,3) - bbox_list(ii,1)) * (bbox_list(ii,4) - bbox_list(ii,2));
+% 	if bbox_area < min_bbox_area
+% 		bbox_list(ii,:) = [];
+% 	end
+% end
