@@ -78,4 +78,9 @@ if isnumeric(file_ix) && file_ix > 0 && mod(file_ix,1) == 0 ...
 		BM = boundarymask(SP, 4);
 	end
 	my_title = f.name;
+else
+	%still need to load a mask, even when the app is first run and there isn't an image yet
+	%the mask will probably be an empty matrix.
+	full_mask = app.MoreEfficientLabellingToolMELTUIFigure.UserData.full_mask; %should match bbox
+	mask = full_mask;
 end
