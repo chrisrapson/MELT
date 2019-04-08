@@ -31,3 +31,7 @@
 % - allow user to customise which class of bboxes they want to auto-zoom (rather than edit load_bbox_list.m)
 % - use YOLO to automatically generate bboxes
 % - train a CNN in the background to suggest masks (See Batchelor2017 IVCNZ)
+% - would upsampling images improve tracking results for small objects? More potential to detect features?
+% - try one of the fancy deep learning one-shot trackers? Maybe a siamese network?
+% - add warning if trying to plot mask without a matching label colormap
+% - allow interpolative tracking. Setting for how many frames to skip. (The tricky part will be when size/shape changes.)
