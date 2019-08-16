@@ -228,21 +228,50 @@ elseif contains(parent_dir, 'Cityscapes') || contains(parent_dir, 'Wilddash')
 	end
 elseif contains(parent_dir, 'SYSU')
 	fid = fopen(fullfile(labels_dir, 'groundtruth.txt'), 'r');
-	line_number = str2num(image_name(5:7)); %#ok operating on a vector
-	tmp = textscan(fid, '%[^\n]', 1, 'HeaderLines', line_number-1);
-	fclose(fid);
+	if fid>=0
+		line_number = str2num(image_name(5:7)); %#ok operating on a vector
+		tmp = textscan(fid, '%[^\n]', 1, 'HeaderLines', line_number-1);
+		fclose(fid);
 
-	tmp_split = split(tmp{1});
-	%check match
-	if strcmp(tmp_split(1), image_name)
-% 		category = tmp_split(2);
-		for ii = 6:4:length(tmp_split)
-			x = str2double(tmp_split{ii-3});
-			y = str2double(tmp_split{ii-2});
-			bbox_list = [bbox_list; x, y, x+str2num(tmp_split{ii-1}), y+str2num(tmp_split{ii})];
+		tmp_split = split(tmp{1});
+		%check match
+		if strcmp(tmp_split(1), image_name)
+	% 		category = tmp_split(2);
+			for ii = 6:4:length(tmp_split)
+				x = str2double(tmp_split{ii-3});
+				y = str2double(tmp_split{ii-2});
+				bbox_list = [bbox_list; x, y, x+str2num(tmp_split{ii-1}), y+str2num(tmp_split{ii})];
+			end
+		else
+			disp(['looking for a line matching image ',image_name,' but found ',tmp{1}])
 		end
-	else
-		disp(['looking for a line matching image ',image_name,' but found ',tmp{1}])
+	end
+elseif contains(parent_dir, 'iRoads')
+	labels_dir = fullfile(image_dir, 'Annotations');
+	num_ix = strfind(fname, '_');
+	fnum = str2double(fname(num_ix+1:end));
+	labels_file = fullfile(labels_dir, [sprintf('%06d',fnum+1),'.xml']);
+	xDoc = parseXML(labels_file); %parseXML.m is a copy-paste from doc xmlread. Including it in the git repo might have copyright implications
+	bbox_list = [];
+	for ii = 1:length(xDoc.Children)
+		if strcmp(xDoc.Children(ii).Name, 'object')
+			%object_type is always "Car"
+% 			object_type = xDoc.Children(ii).Children(2).Children.Data;
+			tmp = xDoc.Children(ii).Children(4).Children;
+			for jj = 1:length(tmp)
+				switch tmp(jj).Name
+					case 'xmin'
+						xmin = str2double(tmp(jj).Children.Data);
+					case 'xmax'
+						xmax = str2double(tmp(jj).Children.Data);
+					case 'ymin'
+						ymin = str2double(tmp(jj).Children.Data);
+					case 'ymax'
+						ymax = str2double(tmp(jj).Children.Data);
+				end
+			end
+			bbox_list = [bbox_list; xmin, ymin, xmax, ymax];
+		end
 	end
 elseif contains(parent_dir, 'iRoads')
 	labels_dir = fullfile(image_dir, 'Annotations');
